@@ -24,7 +24,6 @@
 - [Circuit](#circuit)
 - [Usage](#usage)
 - [List Of Components](#list)
-- [Demo Video](#demovideo)
 - [Built Using](#built_using)
 - [Authors](#authors)
 
@@ -128,7 +127,7 @@ Other components pin connection details
 7. Go to Connect to WiFi tab and put your WiFi credentials to connect the SmartBulb to the server.
 8.  Once connected to a WiFi network, you can again access the captive portal using same URL or the IP Address from the Serial monitor.
 9. You can open settings page with following default credentials
-   1.  User: **SBS**
+   1.  User: **SmartBulb**
    2.  Password: **admin**
 10.   Dashbaord Link: https://nodered-proxy.production.wrapdrive.tech/ui/#!/4
 
@@ -143,9 +142,6 @@ Following components are used to make this project(click to open the amazon.com 
 2. [Single Channel Relay Module](https://www.amazon.com/ARCELI-KY-019-Channel-Module-arduino/dp/B07BVXT1ZK/ref=sr_1_5?crid=24YBJUZ1K6AXT&keywords=relay+module&qid=1644134756&sprefix=relay+modu%2Caps%2C328&sr=8-5)
 
 
-## 📽️ Demo Video <a name = "demovideo"></a>
-
-- [BLEScanner Demo](https://youtu.be/45gjfFNWENM) - BLE Scanner Demo Video
 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
