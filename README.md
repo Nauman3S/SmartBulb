@@ -91,7 +91,7 @@ You should have Arduino IDE Installed
 
 Follow the pinout diagram given below to connect different components to your ESP32 Dev Module board.
 
-![Pinout](Circuit/esp32pinout.jpg)
+![Pinout](Circuit/esp8266pinout.jpg)
 
 ### Complete Circuit Diagram
 
@@ -105,43 +105,42 @@ Here's the complete circuit diagram of the system.
 Other components pin connection details
 ```
 
-#### ESP32 Connections
+#### ESP8266 Connections
 
 ```TWO ESP32 Device Connections```
 
-| ESP32 BLE | ESP32 WiFi| 
+| ESP8266 BLE | Relay Module | 
 | :--- | :--- | 
-| `TX2` | `RX2` |
-| `RX2` | `TX2` |
-| `GND` | `GND` | 
+| `D2` | `S` |
+| `Vin` | `+` |
+| `GND` | `-` | 
  
-
-Note: If the scanning process does not start, press EN button on both ESP32 devices.
 
 ## Usage <a name = "usage"></a>
 
-1.  Upload the code to your ESP32.
-2.  Power on your ESP32, it will present you with an AP named `SBS-abc` (while `SBS` can be changed in the portal and `abc` is a unique id for each esp32) 
+1.  Upload the code to your ESP8266.
+2.  Power on your ESP8266, it will present you with an AP named `SmartBulb-abc` (while `SmartBulb` can be changed in the portal and `abc` is a unique id for each esp32) 
 3.  Default captive portal password `123456789AP` which can be changed in captive portal. 
 4.  Connect to the ESP32 access point and open the web-browser and navigate to the link `http://bulb.local/_ac`. This link will work on most of the operating systems but if your operating system is not allowing to open it, you may want to check the captive portal IP Address from the serial monitor and can use that IP address inplace of the above mentioned URL. 
 5.  The default access IP Address is `http://192.168.4.1/_ac` 
 6.  You will be presented with a main dashboard as shown below(based on your device)
 ![SCR1](artwork/scr1.png)
-7. Go to Connect to WiFi tab and put your WiFi credentials to connect the ESP32 to the server.
+7. Go to Connect to WiFi tab and put your WiFi credentials to connect the SmartBulb to the server.
 8.  Once connected to a WiFi network, you can again access the captive portal using same URL or the IP Address from the Serial monitor.
 9. You can open settings page with following default credentials
    1.  User: **SBS**
    2.  Password: **admin**
-10.   Dashbaord Link: https://nodered-proxy.production.wrapdrive.tech/ui/#!/2
+10.   Dashbaord Link: https://nodered-proxy.production.wrapdrive.tech/ui/#!/4
 
 ![Webapp](artwork/webapp.png)
 
 ## List of Components <a name = "list"></a>
 
-Following components are used to make this project
+Following components are used to make this project(click to open the amazon.com links)
 
-1.  2x ESP32 Dev Module
-    ○ https://www.amazon.com/ESP32-WROOM-32-Development-ESP-32S-Bluetooth-Arduino/dp/B084KWNMM4/ref=sr_1_3?dchild=1&keywords=esp32+devkit&qid=1635342032&sr=8-3
+1.  [NodeMCU 1.0](https://www.amazon.com/HiLetgo-Internet-Development-Wireless-Micropython/dp/B081CSJV2V/ref=sr_1_1?crid=3AZEXPIPCTL8O&keywords=nodemcu+1.0&qid=1644134794&sprefix=nodemcu+1.09%2Caps%2C344&sr=8-1)
+
+2. [Single Channel Relay Module](https://www.amazon.com/ARCELI-KY-019-Channel-Module-arduino/dp/B07BVXT1ZK/ref=sr_1_5?crid=24YBJUZ1K6AXT&keywords=relay+module&qid=1644134756&sprefix=relay+modu%2Caps%2C328&sr=8-5)
 
 
 ## 📽️ Demo Video <a name = "demovideo"></a>

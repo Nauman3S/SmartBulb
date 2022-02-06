@@ -4,7 +4,7 @@
 // #include <FS.h>        //ESP32 File System
 
 IPAddress ipV(192, 168, 4, 1);
-String loadParams(AutoConnectAux &aux, PageArgument &args) //function to load saved settings
+String loadParams(AutoConnectAux &aux, PageArgument &args) // function to load saved settings
 {
     (void)(args);
     File param = FlashFS.open(PARAM_FILE, "r");
@@ -23,24 +23,24 @@ String loadParams(AutoConnectAux &aux, PageArgument &args) //function to load sa
     return String("");
 }
 
-String saveParams(AutoConnectAux &aux, PageArgument &args) //save the settings
+String saveParams(AutoConnectAux &aux, PageArgument &args) // save the settings
 {
-    serverName = args.arg("mqttserver"); //broker
+    serverName = args.arg("mqttserver"); // broker
     serverName.trim();
 
     channelId = args.arg("channelid");
     channelId.trim();
 
-    userKey = args.arg("userkey"); //user name
+    userKey = args.arg("userkey"); // user name
     userKey.trim();
 
-    apiKey = args.arg("apikey"); //password
+    apiKey = args.arg("apikey"); // password
     apiKey.trim();
 
-    apPass = args.arg("apPass"); //ap pass
+    apPass = args.arg("apPass"); // ap pass
     apPass.trim();
 
-    settingsPass = args.arg("settingsPass"); //ap pass
+    settingsPass = args.arg("settingsPass"); // ap pass
     settingsPass.trim();
 
     hostName = args.arg("hostname");
@@ -67,7 +67,7 @@ String saveParams(AutoConnectAux &aux, PageArgument &args) //save the settings
     ESP.restart();
     return String("");
 }
-bool loadAux(const String auxName) //load defaults from data/*.json
+bool loadAux(const String auxName) // load defaults from data/*.json
 {
     bool rc = false;
     Serial.println("load aux func");
@@ -94,15 +94,15 @@ bool whileCP()
     }
 }
 
-void setup() //main setup functions
+void setup() // main setup functions
 {
     Serial.begin(115200);
     delay(1000);
-    
+    pinMode(LED_BUILTIN, OUTPUT);
     Serial.print("Device ID: ");
     Serial.println(ss.getMacAddress());
 
-    if (!MDNS.begin("bulb")) //starting mdns so that user can access webpage using url `esp32.local`(will not work on all devices)
+    if (!MDNS.begin("bulb")) // starting mdns so that user can access webpage using url `bulb.local`(will not work on all devices)
     {
         Serial.println("Error setting up MDNS responder!");
         while (1)
@@ -118,7 +118,7 @@ void setup() //main setup functions
     loadAux(AUX_MQTTSETTING);
     loadAux(AUX_MQTTSAVE);
     AutoConnectAux *setting = portal.aux(AUX_MQTTSETTING);
-    if (setting) //get all the settings parameters from setting page on esp32 boot
+    if (setting) // get all the settings parameters from setting page on esp boot
     {
         Serial.println("Setting loaded");
         PageArgument args;
@@ -132,7 +132,7 @@ void setup() //main setup functions
         AutoConnectInput &apikeyElm = mqtt_setting["apikey"].as<AutoConnectInput>();
         AutoConnectInput &settingsPassElm = mqtt_setting["settingsPass"].as<AutoConnectInput>();
 
-        //vibSValueElm.value="VibS:11";
+        // vibSValueElm.value="VibS:11";
         serverName = String(serverNameElm.value);
         channelId = String(channelidElm.value);
         userKey = String(userkeyElm.value);
@@ -143,10 +143,10 @@ void setup() //main setup functions
 
         if (hostnameElm.value.length())
         {
-            //hostName=hostName+ String("-") + String(GET_CHIPID(), HEX);
+            // hostName=hostName+ String("-") + String(GET_CHIPID(), HEX);
             //;
-            //portal.config(hostName.c_str(), apPass.c_str());
-            // portal.config(hostName.c_str(), "123456789AP");
+            // portal.config(hostName.c_str(), apPass.c_str());
+            //  portal.config(hostName.c_str(), "123456789AP");
             config.apid = hostName + "-" + get_CHIPID();
             config.password = apPass;
             config.psk = apPass;
@@ -158,11 +158,11 @@ void setup() //main setup functions
 
             // hostName = String("OEE");;
             // portal.config(hostName.c_str(), "123456789AP");
-            config.apid = hostName + "-" +  get_CHIPID();
+            config.apid = hostName + "-" + get_CHIPID();
             config.password = apPass;
             config.psk = apPass;
-            //config.hostName = hostName;//hostnameElm.value+ "-" + String(GET_CHIPID(), HEX);
-            // portal.config(hostName.c_str(), "123456789AP");
+            // config.hostName = hostName;//hostnameElm.value+ "-" + String(GET_CHIPID(), HEX);
+            //  portal.config(hostName.c_str(), "123456789AP");
             Serial.println("hostname set to " + hostName);
         }
         config.homeUri = "/_ac";
@@ -175,7 +175,7 @@ void setup() //main setup functions
     {
         Serial.println("aux. load error");
     }
-    //config.homeUri = "/_ac";
+    // config.homeUri = "/_ac";
     config.apip = ipV;
     config.autoReconnect = true;
     config.reconnectInterval = 1;
@@ -183,10 +183,10 @@ void setup() //main setup functions
     Serial.println(hostName);
     Serial.print("Password: ");
     Serial.println(apPass);
-    config.title = "Smart Bulb"; //set title of webapp
+    config.title = "Smart Bulb"; // set title of webapp
     Serial.print("Device Hostname: ");
     Serial.println(hostName);
-    //add different tabs on homepage
+    // add different tabs on homepage
 
     //  portal.disableMenu(AC_MENUITEM_DISCONNECT);
     server.on("/", handleRoot);
@@ -217,7 +217,7 @@ void setup() //main setup functions
     }
 
     MDNS.addService("http", "tcp", 80);
-    mqttConnect(); //start mqtt
+    mqttConnect(); // start mqtt
 
     // mqttPublish("sbs/config/", "000");
 }
@@ -227,9 +227,8 @@ void loop()
 {
     server.handleClient();
     portal.handleRequest();
-    
-
-    if (millis() - lastPub > updateInterval) //publish data to mqtt server
+    MDNS.update();
+    if (millis() - lastPub > updateInterval) // publish data to mqtt server
     {
 
         ledState(ACTIVE_MODE);

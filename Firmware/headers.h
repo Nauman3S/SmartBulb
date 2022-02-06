@@ -6,6 +6,7 @@ String apid;
 String hostName = "SmartBulb";
 String apPass="123456789AP";
 String settingsPass="admin";
+#define BUILTIN_LED 2 // backward compatibility
 // #define AUTOCONNECT_USE_SPIFFS 1
 #define ARDUINO_ARCH_ESP8266 1
 #if defined(ARDUINO_ARCH_ESP8266)
@@ -26,9 +27,7 @@ WebServer server;
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
 #include "SoftwareStack.h"
-#ifndef BUILTIN_LED
-#define BUILTIN_LED 2 // backward compatibility
-#endif
+
 #if defined(ARDUINO_ARCH_ESP8266)
 #ifdef AUTOCONNECT_USE_SPIFFS
 FS &FlashFS = SPIFFS;

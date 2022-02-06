@@ -46,31 +46,27 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
         Serial.print("Setting Bulb state: ");
         Serial.println(pLoad);
+        if (pLoad.indexOf(String("OFF")) >= 0)
+        {
+            digitalWrite(BUILTIN_LED, HIGH);
+        }
+        if (pLoad.indexOf(String("ON")) >= 0)
+        {
+            digitalWrite(BUILTIN_LED, LOW);
+        }
     }
-    
 
-    // Switch on the LED if an 1 was received as first character
-    if ((char)payload[0] == '1')
-    {
-        digitalWrite(BUILTIN_LED, LOW); // Turn the LED on (Note that LOW is the voltage level
-                                        // but actually the LED is on; this is because
-                                        // it is active low on the ESP-01)
-    }
-    else
-    {
-        digitalWrite(BUILTIN_LED, HIGH); // Turn the LED off by making the voltage HIGH
-    }
     pLoad = "";
 }
 void reconnect()
 {
     // Loop until we're reconnected
-    mqttClient.setBufferSize(3024);
+    mqttClient.setBufferSize(2024);
     while (!mqttClient.connected())
     {
         Serial.print("Attempting MQTT connection...");
         // Create a random client ID
-        String clientId = "ESP32Client-";
+        String clientId = "ESPClient-";
         clientId += String(random(0xffff), HEX);
         // Attempt to connect
         if (mqttClient.connect(clientId.c_str(), mqtt_user, mqtt_pass))
