@@ -11,11 +11,11 @@ AutoConnect aims to connect the ESP module as a station to a WiFi access point a
 
 ## Automatic reconnect
 
-AutoConnect will change the WiFi mode depending on the situation. The [AutoConnect::begin](lsbegin.md) function starts WiFi mode in **STA** and starts the webserver if the connection is successful by the [**1st-WiFi.begin**](lsbegin.md). But if it will fail to connect with the least recently established access point, it will switch the WiFi mode to **AP_STA** and starts the DNS server to be able to launch a captive portal.
+AutoConnect will change the WiFi mode depending on the situation. The [AutoConnect::begin](lsbegin.md) function starts the webserver with **WIFI_STA** mode when the connection is successful with [*1st-WiFi.begin*](lsbegin.md). If the connection with the last access point fails, AutoConnect will switch the WiFi mode to **WIFI_AP_STA**, launching a DNS server and allowing the ESP module to launch the captive portal.
 
-When the captive portal starts, **SoftAP** starts and STA disconnected. At this point, the station configuration information (it is known as the SDK's [station_config](https://github.com/esp8266/Arduino/blob/db75d2c448bfccc6dc308bdeb9fbd3efca7927ff/tools/sdk/include/user_interface.h#L249) structure) that the ESP module has stored on its own is discarded.
+The captive portal launches SoftAP at its start and disconnects the STA. At this time, the ESP module discards its stored station configuration data (known as the SDK's [station_config](https://github.com/esp8266/Arduino/blob/db75d2c448bfccc6dc308bdeb9fbd3efca7927ff/tools/sdk/include/user_interface.h#L249) structure). This is the default behavior of AutoConnect.
 
-AutoConnect can connect to an access point again that has disconnected once, and its control is allowed by [*AutoConnectConfig::autoReconnect*](apiconfig.md#autoreconnect) that option specifies to attempt to reconnect to the past established access point using the saved credentials. If the [**autoReconnect**](apiconfig.md#autoreconnect) is enabled, AutoConnect will not launch SoftAP immediately even if 1st-WiFi.begin fails. When AutoConnect fails to connect WiFi, it will scan the WiFi signal to find out which access points it had connected to in the past. Then if it finds the saved BSSID in the broadcasts, AutoConnect will attempt to connect again applying the matched credential explicitly while still in STA mode. (AutoReconnect works well even with hidden SSID access points)
+On the other hand, AutoConnect can connect to an access point again that has disconnected once, and its control is allowed by [*AutoConnectConfig::autoReconnect*](apiconfig.md#autoreconnect) that option specifies to attempt to reconnect to the past established access point using the saved credentials. If the [**autoReconnect**](apiconfig.md#autoreconnect) is enabled, AutoConnect will not launch SoftAP immediately even if *1st-WiFi.begin* fails. When AutoConnect fails WiFi connection, it will scan the WiFi signal and try to find the access point that the ESP module has connected to in the past. If AutoConnect finds one of the saved credentials from the broadcast with BSSID, it will explicitly apply the matching credential and attempt to reconnect while in WIFI_STA mode. (AutoReconnect works well even with hidden SSID access points)
 
 ```cpp hl_lines="3"
 AutoConnect       Portal;
@@ -149,6 +149,11 @@ Combining these two parameters allows you to filter the destination AP when mult
     <td>Auto-selected credentials with max RSSI</td>
 </tr>
 </table>
+
+!!! note "In ESP32, the difference between the [*AutoConnectConfig::principle*](apiconfig.md#principle) and `WIFI_ALL_CHANNEL_SCAN` in `WiFi.begin`"
+    In ESP32, if there are multiple access points with the same SSID and PW within reach, `WiFi.begin` with the SSID and PW explicitly specified will scan all radio channels and connect to the AP which has the highest signal strength. This feature has been enabled since [ESP32 Arduino Release 1.0.6](https://github.com/espressif/arduino-esp32/commit/3253de87). The `principle` setting is slightly different from this feature.  
+    **AutoConnect does not specify the SSID and PW in the 1st-WiFi.begin**. It leaves that to the contents stored in the SDK. Even if there is an AP with a stronger signal nearby, it will try to connect to an AP with a **smaller channel number**. However, in the case where `autoReconnect` setting will attempt to reconnect, AutoConnect will read the SSID and PW from the saved credentials and explicitly pass them to `WiFi.begin`. Therefore, in this case, the connection will be made to the AP with the highest signal strength by `WIFI_ALL_CHANNEL_SCAN`. But it is only **valid across multiple APs with the same SSID and PW**.  
+    On the other hand, **AC_PRINCIPLE_RSSI** tries to connect the AP with the strongest signal from the connection candidates after selecting the SSID when multiple APs with different SSIDs are mixed in the reachable range.
 
 ## Detects connection establishment to AP
 

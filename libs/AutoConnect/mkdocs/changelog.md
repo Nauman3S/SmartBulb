@@ -1,3 +1,74 @@
+### [1.3.3] Jan. 25, 2022
+
+#### Fix
+
+- Fixed the missing initialization of MQTT parameter settings of mqttRSSI.ino example sketch.
+- Reverted the MQTT API endpoint of Thingspeak.com in the mqttRSSI example sketches.
+- Changed ESP32Cam XCLK to be attenuated to avoid interference with WiFi signals.
+
+---
+### [1.3.2] Jan. 1, 2022
+
+#### Enhancements
+
+- Supports an [AutoConnectRange](acelements.md#autoconnectrange) as a new AutoConnectElement.
+- Adds the [`responsive`](achandling.md#an-http-response-from-the-custom-web-page-handler) parameter with AutoConnectAux.
+- Adds an [`AutoConnectAux::redirect`](apiaux.md#redirect) function.
+- Adds an example for using AutoConnect with the [ESP32 camera driver](https://github.com/espressif/esp32-camera) as WebCamServer.
+
+#### Fix
+
+- Fixed an issue where a password is lost when SoftAP is stopped.
+
+---
+### [1.3.1] Oct. 09, 2021
+
+#### Fixes
+
+- Fixed an issue that was incompatible with ArduinoJson version 5.
+- Fixed LittleFS mount check not working with ESP32.
+- Fixed autoReconnect not being able to restore a static IP setting.
+- Fixed that static IP settings were not cleared when loading credential.
+
+---
+### [1.3.0] Sep. 25, 2021
+
+#### Enhancements
+
+- Supports ESP8266 3.0.0 Arduino core.
+- Supports ESP32 Arduino core 2.0.0.
+- Supports LittleFS with ESP32.
+- Supports AutoConnectOTA status notifications.
+- Supports AutoConnectConfigAux. (Preview)
+- Supports to save credentials always.
+- Adds a `style` attribute with AutoConnectInput.
+- Adds the `div` tag generation with the AutoConnectElement.
+- Adds `[]` operator with const char for AutoConnectAux.
+- Adds `[]` operator with `__FlashStringHelper` for AutoConnectAux.
+- Adds `AutoConnectAux::content` function to get a number of AutoConnectElements.
+- Adds `AutoConnect::getConfig` function to get an actual instance of AutoConnectConfig.
+
+#### Fixes
+
+- Fixed CSS attribute missing of AutoConnectInput with the number type.
+- Fixed garbage being mixed in a loaded credential.
+- Fixed the output place of Posterior attribute for AutoConnectRadio.
+- Improved the the calculation for the size of ArduinoJson document.
+- Fixed Incomplete deletion with AutoConnectCredential.
+- Fixed credentials not erased correctly.
+- Fixed AutoConnectText posterior being unavailable.
+
+---
+### [1.2.3] Jan. 3, 2021
+
+#### Enhancements
+
+- Improved memory management.
+
+!!! note "PageBuilder v1.5.0 is required"
+    Since AutoConnect v1.2.3, [PageBuilder](https://github.com/Hieromon/PageBuilder) v1.5.0 or later is required. Please update PageBuilder to latest version.
+
+---
 ### [1.2.2] Dec. 13, 2020
 
 #### Fix

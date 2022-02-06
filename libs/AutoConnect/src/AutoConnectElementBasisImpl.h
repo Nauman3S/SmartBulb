@@ -2,8 +2,8 @@
  * Implementation of AutoConnectElementBasis classes.
  * @file AutoConnectElementBasisImpl.h
  * @author hieromon@gmail.com
- * @version  1.2.0
- * @date 2020-11-11
+ * @version  1.3.2
+ * @date 2021-11-24
  * @copyright  MIT license.
  */
 
@@ -18,14 +18,7 @@
 #include <regex>
 #endif
 #include "AutoConnectElementBasis.h"
-
-// Preserve a valid global Filesystem instance.
-// It allows the interface to the actual filesystem for migration to LittleFS.
-#ifdef AUTOCONNECT_USE_SPIFFS
-namespace AutoConnectFS { SPIFFST& FLASHFS = SPIFFS; };
-#else
-namespace AutoConnectFS { SPIFFST& FLASHFS = LittleFS; };
-#endif
+#include "AutoConnectFS.h"
 
 /**
  * Append post-tag according by the post attribute.
@@ -38,6 +31,8 @@ const String AutoConnectElementBasis::posterior(const String& s) const {
     html = s + String(F("<br>"));
   else if (post == AC_Tag_P)
     html = String("<p>") + s + String(F("</p>"));
+  else if (post == AC_Tag_DIV)
+    html = String("<div>") + s + String(F("</div>"));
   else
     html = s;
   return html;
@@ -119,7 +114,7 @@ bool AutoConnectFileBasis::attach(const ACFile_t store) {
   // Classify a handler type and create the corresponding handler
   switch (store) {
   case AC_File_FS:
-    handlerFS = new AutoConnectUploadFS(AutoConnectFS::FLASHFS);
+    handlerFS = new AutoConnectUploadFS(AUTOCONNECT_APPLIED_FILESYSTEM);
     _upload.reset(reinterpret_cast<AutoConnectUploadHandler*>(handlerFS));
     break;
   case AC_File_SD:
@@ -166,6 +161,8 @@ const String AutoConnectInputBasis::toHTML(void) const {
       html += String(F(" placeholder=\"")) + placeholder + String("\"");
     if (value.length())
       html += String(F(" value=\"")) + value + String("\"");
+    if (style.length())
+      html += String(F(" style=\"")) + style + String("\"");
     html += String(">");
     html = AutoConnectElementBasis::posterior(html);
   }
@@ -244,16 +241,18 @@ const String AutoConnectRadioBasis::toHTML(void) const {
     for (const String value : _values) {
       n++;
       String  id = name + "_" + String(n);
-      html += String(F("<input type=\"radio\" name=\"")) + name + String(F("\" id=\"")) + id + String(F("\" value=\"")) + value + String("\"");
+      String  innerHtml = String(F("<input type=\"radio\" name=\"")) + name + String(F("\" id=\"")) + id + String(F("\" value=\"")) + value + String("\"");
       if (n == checked)
-        html += String(F(" checked"));
-      html += String(F("><label for=\"")) + id + String("\">") + value + String(F("</label>"));
+        innerHtml += String(F(" checked"));
+      innerHtml += String(F("><label for=\"")) + id + String("\">") + value + String(F("</label>"));
       if (n <= tags.size())
-        html += tags[n - 1];
-      if (order == AC_Vertical)
-        html += String(F("<br>"));
+        innerHtml += tags[n - 1];
+      if (order == AC_Vertical) {
+        html += innerHtml + String(F("<br>"));
+      }
+      else
+        html += AutoConnectElementBasis::posterior(innerHtml);
     }
-    html = AutoConnectElementBasis::posterior(html);
   }
   return html;
 }
@@ -264,6 +263,69 @@ const String AutoConnectRadioBasis::toHTML(void) const {
 const String& AutoConnectRadioBasis::value(void) const {
   static const String _nullString = String();
   return checked ? _values.at(checked - 1) : _nullString;
+}
+
+/**
+ * Generate an HTML <input type=range> element.
+ * If the magnify is true, place a span field to display the current
+ * value. The entered value can be obtained using the user callback
+ * function registered by AutoConnectAux::on after the form is sent in
+ * combination with AutoConnectSubmit.
+ * @return String  an HTML string.
+ */
+const String AutoConnectRangeBasis::toHTML(void) const {
+  String  html = String("");
+
+  if (enable) {
+    if (label.length())
+      html = String(F("<label for=\"")) + name + String("\">") + label + String(F("</label>"));
+    
+    String  dispFil("");
+    String  onInput("");
+    char  posMagnify;
+    PGM_P posRight = PSTR("right");
+    PGM_P posLeft = PSTR("left");
+    PGM_P posPadding;
+    PGM_P posAlign;
+    switch (magnify) {
+    case AC_Infront:
+      posMagnify = 'p';
+      posPadding = posRight;
+      posAlign = posLeft;
+      break;
+    case AC_Behind:
+      posMagnify = 'n';
+      posPadding = posLeft;
+      posAlign = posRight;
+      break;
+    case AC_Void:
+    default:
+      posMagnify = '\0';
+      posPadding = nullptr;
+      posAlign = nullptr;
+    }
+    if  (magnify != AC_Void) {
+      dispFil = String(F("<span class=\"magnify\" style=\"padding-")) + String(posPadding) + String(F(":3px;text-align:")) + String(posAlign) + String("\">") + String(value) + String(F("</span>"));
+      onInput = String(F(" oninput=\"_ma(this,'")) + String(posMagnify) + String(F("')\""));
+    }
+
+    if (magnify == AC_Infront)
+      html += dispFil;
+
+    html += String(F("<input type=\"range\" name=\"")) + name + String(F("\" id=\"")) + name + String(F("\" value=\"")) + String(value) + String(F("\" min=\"")) + String(min) + String(F("\" max=\"")) + String(max) + String("\"");
+    if (step != 1)
+      html += String(F(" step=\"")) + String(step) + String("\"");
+    html += onInput;
+    if (style.length())
+      html += String(F(" style=\"")) + style + String("\"");
+    html += String(">");
+
+    if (magnify == AC_Behind)
+      html += dispFil;
+
+    html = AutoConnectElementBasis::posterior(html);
+  }
+  return html;
 }
 
 /**
@@ -354,12 +416,8 @@ const String AutoConnectTextBasis::toHTML(void) const {
   String  html = String("");
 
   if (enable) {
-    html = String(F("<div id=\"")) + name + String('"');
     String  value_f = value;
 
-    if (style.length())
-      html += String(F(" style=\"")) + style + String("\"");
-    html += String(">");
     if (format.length()) {
       int   buflen = (value.length() + format.length() + 16 + 1) & (~0xf);
       char* buffer;
@@ -369,8 +427,11 @@ const String AutoConnectTextBasis::toHTML(void) const {
         free(buffer);
       }
     }
-    html += value_f + String(F("</div>"));
-    html = AutoConnectElementBasis::posterior(html);
+
+    if (style.length())
+      html = String(F("<div id=\"")) + name + String(F("\" style=\"")) + style + String("\">") + value_f + String(F("</div>"));
+    else
+      html = AutoConnectElementBasis::posterior(value_f);
   }
   return html;
 }

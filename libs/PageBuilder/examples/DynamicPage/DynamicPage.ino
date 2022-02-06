@@ -1,3 +1,11 @@
+/*
+  DynamicPage.ino, Example for the PageBuilder library.
+  Copyright (c) 2017, Hieromon Ikasamo
+  https://github.com/Hieromon/PageBuilder
+  This software is released under the MIT License.
+  https://opensource.org/licenses/MIT
+*/
+
 #if defined(ARDUINO_ARCH_ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -40,14 +48,14 @@ bool handleAcs(HTTPMethod method, String uri) {
     return true;
   } else {
     currentUri = uri;
-    page.clearElement();          // Discards the remains of PageElement.
+    page.clearElements();         // Discards the remains of PageElement.
     page.addElement(elm);         // Register PageElement for current access.
 
     Serial.println("Request:" + uri);
 
     if (uri == "/") {             // for the / page
       page.setUri(uri.c_str());
-      elm.setMold(PSTR(
+      elm.setMold(F(
         "<html>"
         "<body>"
         "<h2>{{ROOT}}</h2>"
@@ -58,7 +66,7 @@ bool handleAcs(HTTPMethod method, String uri) {
     }
     else if (uri == "/hello") {   // for the /hello page
       page.setUri(uri.c_str());
-      elm.setMold(PSTR(
+      elm.setMold(F(
         "<html>"
         "<body>"
         "<p style=\"color:Tomato;\">{{HELLO}}</p>"
