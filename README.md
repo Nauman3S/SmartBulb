@@ -126,7 +126,7 @@ Other components pin connection details
 ![SCR1](artwork/scr1.png)
 7. Go to Connect to WiFi tab and put your WiFi credentials to connect the SmartBulb to the server.
 8.  Once connected to a WiFi network, you can again access the captive portal using same URL or the IP Address from the Serial monitor.
-9. You can open settings page with following default credentials
+9.  You can open settings page with following default credentials
    1.  User: **SmartBulb**
    2.  Password: **admin**
 10.   Dashbaord Link: https://nodered-proxy.production.wrapdrive.tech/ui/#!/4
