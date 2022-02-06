@@ -123,7 +123,7 @@ Note: If the scanning process does not start, press EN button on both ESP32 devi
 1.  Upload the code to your ESP32.
 2.  Power on your ESP32, it will present you with an AP named `SBS-abc` (while `SBS` can be changed in the portal and `abc` is a unique id for each esp32) 
 3.  Default captive portal password `123456789AP` which can be changed in captive portal. 
-4.  Connect to the ESP32 access point and open the web-browser and navigate to the link `http://esp32.local/_ac`. This link will work on most of the operating systems but if your operating system is not allowing to open it, you may want to check the captive portal IP Address from the serial monitor and can use that IP address inplace of the above mentioned URL. 
+4.  Connect to the ESP32 access point and open the web-browser and navigate to the link `http://bulb.local/_ac`. This link will work on most of the operating systems but if your operating system is not allowing to open it, you may want to check the captive portal IP Address from the serial monitor and can use that IP address inplace of the above mentioned URL. 
 5.  The default access IP Address is `http://192.168.4.1/_ac` 
 6.  You will be presented with a main dashboard as shown below(based on your device)
 ![SCR1](artwork/scr1.png)

@@ -102,7 +102,7 @@ void setup() //main setup functions
     Serial.print("Device ID: ");
     Serial.println(ss.getMacAddress());
 
-    if (!MDNS.begin("esp32")) //starting mdns so that user can access webpage using url `esp32.local`(will not work on all devices)
+    if (!MDNS.begin("bulb")) //starting mdns so that user can access webpage using url `esp32.local`(will not work on all devices)
     {
         Serial.println("Error setting up MDNS responder!");
         while (1)
@@ -183,7 +183,7 @@ void setup() //main setup functions
     Serial.println(hostName);
     Serial.print("Password: ");
     Serial.println(apPass);
-    config.title = "Smart Bluetooth Scanner"; //set title of webapp
+    config.title = "Smart Bulb"; //set title of webapp
     Serial.print("Device Hostname: ");
     Serial.println(hostName);
     //add different tabs on homepage
