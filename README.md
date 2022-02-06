@@ -22,6 +22,7 @@
 - [About](#about)
 - [Getting Started](#getting_started)
 - [Circuit](#circuit)
+- [MQTT Topics](#mqtt)
 - [Usage](#usage)
 - [List Of Components](#list)
 - [Built Using](#built_using)
@@ -114,7 +115,16 @@ Other components pin connection details
 | `Vin` | `+` |
 | `GND` | `-` | 
  
+## MQTT Topics <a name = "mqtt"></a>
 
+You can turn on/off the bulb by publishing the messages on the following topics
+Broker: ``broker.hivemq.com``
+
+
+| MQTT Topic | Message | 
+| :--- | :--- | 
+| `smartBulb/device/control` | Send `ON` or `OFF` to control the bulb |
+| `smartBulb/device/config` | Reserved for future use |
 ## Usage <a name = "usage"></a>
 
 1.  Upload the code to your ESP8266.
