@@ -1,7 +1,7 @@
 #include "headers.h"   //all misc. headers and functions
 #include "MQTTFuncs.h" //MQTT related functions
 #include "webApp.h"    //Captive Portal webpages
-#include <FS.h>        //ESP32 File System
+// #include <FS.h>        //ESP32 File System
 
 IPAddress ipV(192, 168, 4, 1);
 String loadParams(AutoConnectAux &aux, PageArgument &args) //function to load saved settings

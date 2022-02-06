@@ -3,10 +3,11 @@ String channelId;
 String userKey;
 String apiKey;
 String apid;
-String hostName = "SBS";
-String apPass;
-String settingsPass;
-
+String hostName = "SmartBulb";
+String apPass="123456789AP";
+String settingsPass="admin";
+// #define AUTOCONNECT_USE_SPIFFS 1
+#define ARDUINO_ARCH_ESP8266 1
 #if defined(ARDUINO_ARCH_ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>

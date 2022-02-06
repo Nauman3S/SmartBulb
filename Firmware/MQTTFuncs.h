@@ -6,24 +6,24 @@ bool mqttConnect();
 void mqttPublish(String path, String msg);
 int deviceExisits = 0;
 
-
-
+String topicN = String("smartBulb/device/config");
+String topicO = String("smartBulb/device/control");
 void MQTTUnSubscribe()
 {
-    String topicN = String("SBS/device/config");
 
     mqttClient.unsubscribe(topicN.c_str());
+    mqttClient.unsubscribe(topicO.c_str());
 }
 void MQTTSubscriptions()
 {
-    //mqttClient.subscribe("SmartTControl/data/v");
+    // mqttClient.subscribe("SmartTControl/data/v");
 
     // for(int i=0;i<10;i++){
     //   IMEIsList[i]==String("NA");
     // }
-    String topicN = String("SBS/device/config");
 
     mqttClient.subscribe(topicN.c_str());
+    mqttClient.subscribe(topicO.c_str());
 }
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -37,10 +37,17 @@ void callback(char *topic, byte *payload, unsigned int length)
         pLoad = pLoad + String((char)payload[i]);
     }
     Serial.println();
-    if (String(topic) == String("SBS/device/config"))
+    if (String(topic) == String("smartBulb/device/config"))
     {
-        
+        Serial.print("Updating Bulb config: ");
+        Serial.println(pLoad);
     }
+    else if (String(topic) == String("smartBulb/device/control"))
+    {
+        Serial.print("Setting Bulb state: ");
+        Serial.println(pLoad);
+    }
+    
 
     // Switch on the LED if an 1 was received as first character
     if ((char)payload[0] == '1')
@@ -69,7 +76,7 @@ void reconnect()
         if (mqttClient.connect(clientId.c_str(), mqtt_user, mqtt_pass))
         {
             Serial.println("Established:" + String(clientId));
-            //mqttClient.subscribe("SmartTControl/data/v");
+            // mqttClient.subscribe("SmartTControl/data/v");
             MQTTSubscriptions();
             // return true;
         }
@@ -112,7 +119,7 @@ bool mqttConnect()
         {
             Serial.println("Established:" + String(clientId));
             internetStatus = "Connected";
-            //mqttClient.subscribe("SmartTControl/data/v");
+            // mqttClient.subscribe("SmartTControl/data/v");
             MQTTSubscriptions();
             return true;
         }
@@ -130,6 +137,6 @@ bool mqttConnect()
 
 void mqttPublish(String path, String msg)
 {
-    //String path = String("channels/") + channelId + String("/publish/") + apiKey;
+    // String path = String("channels/") + channelId + String("/publish/") + apiKey;
     mqttClient.publish(path.c_str(), msg.c_str());
 }
